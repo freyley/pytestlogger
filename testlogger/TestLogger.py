@@ -20,36 +20,14 @@ class TestLogger(unittest.TestCase):
             fp.write(report + u'\n')
         self.logger = filelogger
 
-    def reportLine(self,  stack):
-        codeline = stack[2][1] + ' line ' + str(stack[2][2]) + ': ' + stack[2][4][0].strip()
-        return codeline
 
-    def logAssert(self,  assertCall):
-        try:
-            assertCall()
-            if self.logSuccesses:
-                codeline = self.reportLine(inspect.stack())
-                self.logger('PASSED: ' + codeline)
-        except exceptions.AssertionError,  ae:
-            codeline = self.reportLine(inspect.stack())
-            self.logger('FAILED: ' + ae.message + ' in ' + codeline)
-
-    def foo(self,  method):
-        class_ = method.im_class
-        name_ = method.__name__
-        def alias_method(*args,  **kwargs):
-            print 'whatup?'
-            retval = method(*args,  **kwargs)
-            return retval
-        setattr(class_,  name_,  alias_method)
-
-    def assertEqual(self,  first,  second,  msg=None):
+    def __assertEqual(self,  first,  second,  msg=None):
         def func():
             super(TestLogger,  self).assertEqual(first,  second,  msg)
         self.logAssert(func)
             
-    def assertAlmostEqual(self):
-        pass
+    #def assertAlmostEqual(self):
+    #    pass
 '''        
  'assertAlmostEquals',
  'assertEqual',
