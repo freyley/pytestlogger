@@ -34,6 +34,15 @@ class TestLogger(unittest.TestCase):
             codeline = self.reportLine(inspect.stack())
             self.logger('FAILED: ' + ae.message + ' in ' + codeline)
 
+    def foo(self,  method):
+        class_ = method.im_class
+        name_ = method.__name__
+        def alias_method(*args,  **kwargs):
+            print 'whatup?'
+            retval = method(*args,  **kwargs)
+            return retval
+        setattr(class_,  name_,  alias_method)
+
     def assertEqual(self,  first,  second,  msg=None):
         def func():
             super(TestLogger,  self).assertEqual(first,  second,  msg)
