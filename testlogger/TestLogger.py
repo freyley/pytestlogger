@@ -1,9 +1,11 @@
 import unittest
 import exceptions
 import inspect
+import sys
 
 class TestLogger(unittest.TestCase):
     def runTest(self):
+        '''This TestCase logs errors in running code'''
         pass
 
     def logger(self,  report):
@@ -11,9 +13,9 @@ class TestLogger(unittest.TestCase):
 
     def reset(self):
         self.logSuccesses = False
-        def printlogger(report):
-            print report
-        self.logger = printlogger
+        def stderrlogger(report):
+            sys.stderr.writelines(report)
+        self.logger = stderrlogger
     
     def log_to_file(self, fp):
         def filelogger(report):
