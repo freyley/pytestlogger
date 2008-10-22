@@ -5,6 +5,16 @@ import inspect
 class TestLogger(unittest.TestCase):
     def runTest(self):
         pass
+    def __init__(self):
+        filterfunc = lambda x: ((x.startswith('assert') or x.startswith('fail')) and not x.endswith('Exception'))
+        for func in filter(filterfunc,  dir(self)):
+            func = getattr(self,  func)
+            def method(*args,  **kwargs):
+                print 'beginning'
+                retval = func(*args,  **kwargs)
+                print 'ending'
+                return retval
+            setattr(self,  func.__name__,  method)
 
     def logger(self,  report):
         print "No logger defined. This shouldn't happen."
@@ -21,13 +31,6 @@ class TestLogger(unittest.TestCase):
         self.logger = filelogger
 
 
-    def __assertEqual(self,  first,  second,  msg=None):
-        def func():
-            super(TestLogger,  self).assertEqual(first,  second,  msg)
-        self.logAssert(func)
-            
-    #def assertAlmostEqual(self):
-    #    pass
 '''        
  'assertAlmostEquals',
  'assertEqual',

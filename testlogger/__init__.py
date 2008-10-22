@@ -31,9 +31,9 @@ def wrap_asserts(obj):
         replace_method(func)
 
 
-testlog = TestLogger()
-testlog.reset()
-wrap_asserts(testlog)
+#testlog = TestLogger()
+#testlog.reset()
+#wrap_asserts(testlog)
 
 
     
