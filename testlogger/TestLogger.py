@@ -21,7 +21,10 @@ class TestLogger(unittest.TestCase):
         self.logger = filelogger
 
     def reportLine(self,  stack):
-        codeline = stack[2][1] + ' line ' + str(stack[2][2]) + ': ' + stack[2][4][0].strip()
+        if stack[2][4]:
+            codeline = stack[2][1] + ' line ' + str(stack[2][2]) + ': ' + stack[2][4][0].strip()
+        else:
+            codeline = ' console'
         return codeline
 
     def logAssert(self,  assertCall):
@@ -39,8 +42,10 @@ class TestLogger(unittest.TestCase):
             super(TestLogger,  self).assertEqual(first,  second,  msg)
         self.logAssert(func)
             
-    def assertAlmostEqual(self):
-        pass
+    def assertAlmostEqual(self,  first,  second,  places=6,  msg=None):
+        def func():
+            super(TestLogger,  self).assertAlmostEqual(first,  second,  places,  msg)
+        self.logAssert(func)
 '''        
  'assertAlmostEquals',
  'assertEqual',
