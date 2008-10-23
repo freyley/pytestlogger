@@ -4,6 +4,10 @@ import inspect
 import sys
 
 class TestLogger(unittest.TestCase):
+    def __init__(self):
+        self.reset()
+        super(TestLogger,  self).__init__()
+
     def runTest(self):
         '''This TestCase logs errors in running code'''
         pass
@@ -51,7 +55,7 @@ class TestLogger(unittest.TestCase):
 
     def failUnless(self, expr, msg=None):
         def func():
-            super(TestLogger,  self).failUnless(self,  expr,  msg)
+            super(TestLogger,  self).failUnless(expr,  msg)
         self.logAssert(func)
 
     def failUnlessRaises(self, excClass, callableObj, *args, **kwargs):
@@ -78,18 +82,12 @@ class TestLogger(unittest.TestCase):
         def func():
             super(TestLogger,  self).failIfAlmostEqual(first,  second,  places,  msg)
         self.logAssert(func)
+
     # Synonyms for assertion methods
-
     assertEqual = assertEquals = failUnlessEqual
-
     assertNotEqual = assertNotEquals = failIfEqual
-
     assertAlmostEqual = assertAlmostEquals = failUnlessAlmostEqual
-
     assertNotAlmostEqual = assertNotAlmostEquals = failIfAlmostEqual
-
     assertRaises = failUnlessRaises
-
-    assert_ = assertTrue = failUnless
-
+    assertTrue = assert_ = failUnless
     assertFalse = failIf
