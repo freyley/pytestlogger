@@ -19,6 +19,10 @@ class TestLoggerTests(unittest.TestCase):
         testlog.assertEqual(4, 4)
         answer = u'PASSED: testlogger_tests.py line '+str(inspect.getlineno(sys._getframe()) -1)+': testlog.assertEqual(4, 4)\n'
         self.assertEqual(self.log.getvalue(),  answer)
+        testlog.assertEqual(4, 3)
+        answer += u'FAILED: 4 != 3 in testlogger_tests.py line '+str(inspect.getlineno(sys._getframe()) -1)+ ': testlog.assertEqual(4, 3)\n'
+        self.assertEqual(self.log.getvalue(), answer)
+        
 
     def testAllFunctions(self):
         testlog.assertTrue(1 == 2)
