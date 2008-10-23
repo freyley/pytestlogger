@@ -10,10 +10,17 @@ def wrap_method(method,  methodname):
     name_ = methodname
 
     def alias_method(*args, **kwargs):
-        print "%s %s srated" % (class_.__name__, name_)
-        retval = method(*args, **kwargs)
-        print "%s %s finished" % (class_.__name__, name_)
-        return retval
+        retval = None
+        try:
+            retval = method(*args, **kwargs)
+            if self.logSuccesses:
+                codeline = self.reportLine(inspect.stack())
+                self.logger('PASSED: ' + codeline)
+        except exceptions.AssertionError,  ae:
+            codeline = self.reportLine(inspect.stack())
+            self.logger('FAILED: ' + ae.message + ' in ' + codeline)
+        finally:
+            return retval
 
     # replace the original method with the alias
     setattr(class_, name_, alias_method)
@@ -37,9 +44,15 @@ class TestLogger(unittest.TestCase):
             fp.write(report + u'\n')
         self.logger = filelogger
 
+    def reportLine(self,  stack):
+        if stack[2][4]:
+            codeline = stack[2][1] + ' line ' + str(stack[2][2]) + ': ' + stack[2][4][0].strip()
+        else:
+            codeline = ' console'
+        return codeline
+
 filterfunc = lambda x: ((x.startswith('assert') or x.startswith('fail')) and not x.endswith('Exception'))
 functions = filter(filterfunc,  dir(TestLogger))
 for funcname in functions:
     func = getattr(TestLogger,  funcname)
-    trace_it(func,  funcname)
-
+    wrap_method(func,  funcname)
