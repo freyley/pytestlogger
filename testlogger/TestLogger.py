@@ -2,6 +2,7 @@ import unittest
 import exceptions
 import inspect
 import sys
+import datetime
 
 def wrap_method(method,  methodname):
     # retrieve the enclosing class of the method
@@ -37,12 +38,12 @@ class TestLogger(unittest.TestCase):
     def reset(self):
         self.logSuccesses = False
         def stderrlogger(report):
-            sys.stderr.writelines(report)
+            sys.stderr.writelines(str(datetime.datetime.now())+': '+report)
         self.logger = stderrlogger
         
     def log_to_file(self, fp):
         def filelogger(report):
-            fp.write(report + u'\n')
+            fp.write(str(datetime.datetime.now())+': '+report + u'\n')
         self.logger = filelogger
 
     def reportLine(self,  stack):
