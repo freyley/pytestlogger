@@ -1,7 +1,7 @@
 import unittest
 import exceptions
 import inspect
-import datetime
+import sys
 
 def wrap_method(method,  methodname):
     # retrieve the enclosing class of the method
@@ -9,44 +9,47 @@ def wrap_method(method,  methodname):
     # retrieve the method name
     name_ = methodname
 
-    def alias_method(*args, **kwargs):
+    def alias_method(self,  *args, **kwargs):
         retval = None
         try:
-            retval = method(*args, **kwargs)
+            retval = method(self, *args, **kwargs)
             if self.logSuccesses:
                 codeline = self.reportLine(inspect.stack())
                 self.logger('PASSED: ' + codeline)
         except exceptions.AssertionError,  ae:
             codeline = self.reportLine(inspect.stack())
             self.logger('FAILED: ' + ae.message + ' in ' + codeline)
-        finally:
-            return retval
-
+        return retval
     # replace the original method with the alias
     setattr(class_, name_, alias_method)
 
 
 class TestLogger(unittest.TestCase):
+    def __init__(self):
+        self.reset()
+        super(TestLogger,  self).__init__()
+
     def runTest(self):
+        '''This TestCase logs errors in running code'''
         pass
-        
+
     def logger(self,  report):
         print "No logger defined. This shouldn't happen."
 
     def reset(self):
         self.logSuccesses = False
-        def printlogger(report):
-            print report
-        self.logger = printlogger
-    
+        def stderrlogger(report):
+            sys.stderr.writelines(report)
+        self.logger = stderrlogger
+        
     def log_to_file(self, fp):
         def filelogger(report):
             fp.write(report + u'\n')
         self.logger = filelogger
 
     def reportLine(self,  stack):
-        if stack[2][4]:
-            codeline = stack[2][1] + ' line ' + str(stack[2][2]) + ': ' + stack[2][4][0].strip()
+        if stack[1][4]:
+            codeline = stack[1][1] + ' line ' + str(stack[1][2]) + ': ' + stack[1][4][0].strip()
         else:
             codeline = ' console'
         return codeline
