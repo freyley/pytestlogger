@@ -6,8 +6,6 @@ import sys
 def wrap_method(method,  methodname):
     # retrieve the enclosing class of the method
     class_ = method.im_class
-    # retrieve the method name
-    name_ = methodname
 
     def alias_method(self,  *args, **kwargs):
         retval = None
@@ -21,7 +19,7 @@ def wrap_method(method,  methodname):
             self.logger('FAILED: ' + ae.message + ' in ' + codeline)
         return retval
     # replace the original method with the alias
-    setattr(class_, name_, alias_method)
+    setattr(class_, methodname, alias_method)
 
 
 class TestLogger(unittest.TestCase):
