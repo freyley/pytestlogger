@@ -8,6 +8,7 @@ class TestLoggerTests(unittest.TestCase):
     def setUp(self):
         testlog.reset()
         self.log = StringIO()
+	self.log.name = 'StringIO for Testing'
         testlog.log_to_file(self.log)
 
     def testFailuresGoToFile(self):
